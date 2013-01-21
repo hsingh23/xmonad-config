@@ -1,7 +1,3 @@
--- xmonad config used by Vic Fryzel
--- Author: Vic Fryzel
--- http://github.com/vicfryzel/xmonad-config
- 
 import System.IO
 import System.Exit
 import XMonad
@@ -24,14 +20,14 @@ import qualified Data.Map        as M
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal = "/usr/bin/urxvt"
+myTerminal = "/usr/bin/uxterm"
 
 
 ------------------------------------------------------------------------
 -- Workspaces
 -- The default number of workspaces (virtual screens) and their names.
 --
-myWorkspaces = ["1:term","2:web","3:code","4:vm","5:media"] ++ map show [6..9]
+myWorkspaces = ["1:term","2:subl","3:web","4:pdf","5:media"] ++ map show [6..9]
  
 
 ------------------------------------------------------------------------
@@ -49,15 +45,19 @@ myWorkspaces = ["1:term","2:web","3:code","4:vm","5:media"] ++ map show [6..9]
 -- 'className' and 'resource' are used below.
 --
 myManageHook = composeAll
-    [ className =? "Google-chrome"  --> doShift "2:web"
+    [ className =? "Google-chrome"  --> doShift "3:web"
+    , className =? "chromium-browser"  --> doShift "3:web"
+    , className =? "Firefox"  --> doShift "3:web"
     , resource  =? "desktop_window" --> doIgnore
     , className =? "Galculator"     --> doFloat
     , className =? "Steam"          --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "gpicview"       --> doFloat
     , className =? "MPlayer"        --> doFloat
-    , className =? "VirtualBox"     --> doShift "4:vm"
+    , className =? "Mathematica"        --> doFloat
+    , className =? "sublime-text-2"     --> doShift "2:subl"
     , className =? "Xchat"          --> doShift "5:media"
+    , className =? "Vlc"          --> doShift "5:media"
     , isFullscreen --> (doF W.focusDown <+> doFullFloat)]
 
 
@@ -75,9 +75,8 @@ myLayout = avoidStruts (
     Tall 1 (3/100) (1/2) |||
     Mirror (Tall 1 (3/100) (1/2)) |||
     tabbed shrinkText tabConfig |||
-    Full |||
-    spiral (6/7)) |||
-    noBorders (fullscreenFull Full)
+    Full)
+    --noBorders (fullscreenFull Full)
 
 
 ------------------------------------------------------------------------
@@ -115,7 +114,7 @@ myBorderWidth = 1
 -- ("right alt"), which does not conflict with emacs keybindings. The
 -- "windows key" is usually mod4Mask.
 --
-myModMask = mod1Mask
+myModMask = mod4Mask
  
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   ----------------------------------------------------------------------
@@ -128,12 +127,16 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
   -- Lock the screen using xscreensaver.
   , ((modMask .|. controlMask, xK_l),
-     spawn "xscreensaver-command -lock")
+     spawn "gnome-screensaver-command -l")
+  , ((mod1Mask .|. controlMask, xK_l),
+     spawn "gnome-screensaver-command -l")
+  , ((modMask .|. shiftMask, xK_z),
+     spawn "gnome-screensaver-command -l")
 
   -- Launch dmenu via yeganesh.
   -- Use this to launch programs without a key binding.
   , ((modMask, xK_p),
-     spawn "exe=`dmenu_path_c | yeganesh` && eval \"exec $exe\"")
+     spawn "exe=dmenu_run && eval \"exec $exe\"")
 
   -- Take a screenshot in select mode.
   -- After pressing this key binding, click a window, or draw a rectangle with
@@ -181,7 +184,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Close focused window.
   , ((modMask .|. shiftMask, xK_c),
      kill)
-
+  , ((mod1Mask, xK_F4),
+     kill)
   -- Cycle through the available layout algorithms.
   , ((modMask, xK_space),
      sendMessage NextLayout)
@@ -320,11 +324,11 @@ myStartupHook = return ()
 -- Run xmonad with all the defaults we set up.
 --
 main = do
-  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar.hs"
+  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
   xmonad $ defaults {
       logHook = dynamicLogWithPP $ xmobarPP {
             ppOutput = hPutStrLn xmproc
-          , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
+          , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50
           , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
           , ppSep = "   "}
       , manageHook = manageDocks <+> myManageHook

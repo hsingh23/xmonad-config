@@ -1,6 +1,13 @@
 # xmonad-config
-xmonad-config is the [xmonad](http://xmonad.org/) configuration used by Vic Fryzel.
+xmonad-config is the [xmonad](http://xmonad.org/) configuration created by Vic Fryzel modified by Harsh Singh.
 
+# Significant Changes
+
+New lock screen shortcut [Ctrl + Alt + l]
+No Spiral or Tabless Fullscreen
+Works well with Ubuntu 12.10
+Working on making it work with Gnome3 + xmonad
+Various other fixes
 
 ## Introduction
 
@@ -58,7 +65,7 @@ For source code, or to contribute, see the
 Installing xmonad-config is a matter of backing up any xmonad configuration
 you may already have, cloning the git repository, and updating your PATH.
 
-    cd
+    cd bin/ledmon && make 
     mv .xmonad .xmonad.orig
     git clone https://github.com/vicfryzel/xmonad-config.git .xmonad
     echo "export PATH=\$PATH:~/.cabal/bin:~/.xmonad/bin" >> ~/.bashrc

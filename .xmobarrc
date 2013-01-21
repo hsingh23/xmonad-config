@@ -1,0 +1,18 @@
+Config { font = "-*-Fixed-R-Normal-*-13-*-*-*-*-*-*-*"
+       , lowerOnStart = True
+       , bgColor = "black"
+       , fgColor = "grey"
+       , position = TopW L 90
+       , commands = [ Run Weather "KCMI" ["-t","<skyCondition>: <tempF>F","-L","60","-H","90","--normal","green","--high","red","--low","lightblue"] 36000
+                    , Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Network "wlan0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Cpu ["-L","3","-H","50","--high","red"] 10
+                    , Run Memory ["-t","Mem: <usedratio>%","-L","35","-H","80","--high","red","--normal","yellow"] 10
+                    , Run Date "%a %b %_d %Y %I:%M:%S %p" "date" 10
+                    , Run StdinReader
+                    , Run CommandReader "/home/mnewton/.xmonad/ledmon/ledmon" "LED"
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "<fc=#ffff00>%LED%</fc> %StdinReader% %cpu% | %memory% | %eth0% - %wlan0% }{ %KCMI% | <fc=#ee9a00>%date%</fc>"
+       }
